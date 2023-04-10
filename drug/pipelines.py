@@ -4,7 +4,7 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
 import mysql.connector
-from items import DrugItem, MedicalEquipment
+from items import DrugItem
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 
@@ -28,32 +28,31 @@ class SaveDrugToSql(object):
         self.curr.execute("DROP TABLE IF EXISTS medical_equipment_info")
         self.curr.execute(
             """ CREATE TABLE drug_info (id INT AUTO_INCREMENT PRIMARY KEY, 
-            name_drug VARCHAR(255), 
+            name VARCHAR(255), 
             source_link VARCHAR(255),
-            UNIQUE(name_drug),
+            UNIQUE(name),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)""")
         self.curr.execute(
             """ CREATE TABLE medical_equipment_info (id INT AUTO_INCREMENT PRIMARY KEY, 
-            name_medical_equipment VARCHAR(255), 
+            name VARCHAR(255), 
             source_link VARCHAR(255),
-            UNIQUE(name_medical_equipment),
+            UNIQUE(name),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)""")
 
     def process_item(self, item, spider):
-        if isinstance(item, MedicalEquipment):
-            self.store_db(item)
-        return item
+        self.store_db(item)
+        # return item
 
     def store_db(self, item):
-        if 'name_drug' in item:
-            sql = ("INSERT IGNORE INTO drug_info (name_drug,source_link) VALUES (%s,%s)")
-            val = (item['name_drug'], item['source_link'])
+        if item['type'] == 'drug':
+            sql = ("INSERT IGNORE INTO drug_info (name,source_link) VALUES (%s,%s)")
+            val = (item['name'], item['source_link'])
             self.curr.execute(sql, val)
-        if 'name_medical_equipment' in item:
-            sql = ("INSERT IGNORE INTO medical_equipment_info (name_medical_equipment,source_link) VALUES (%s,%s)")
-            val = (item['name_medical_equipment'], item['source_link'])
+        if item['type'] == 'medical_equipment':
+            sql = ("INSERT IGNORE INTO medical_equipment_info (name,source_link) VALUES (%s,%s)")
+            val = (item['name'], item['source_link'])
             self.curr.execute(sql, val)
         # self.curr.execute("""insert into drug_info values (%s)""",(
         #     item['name_drug']

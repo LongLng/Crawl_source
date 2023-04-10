@@ -8,11 +8,9 @@ import scrapy
 
 class DrugItem(scrapy.Item):
     # define the fields for your item here like:
-    name_drug = scrapy.Field()
+    name = scrapy.Field()
     source_link = scrapy.Field()
-    pass
+    type = scrapy.Field()
 
 
-class MedicalEquipment(scrapy.Item):
-    name_medical_equipment = scrapy.Field()
-    source_link = scrapy.Field()
+

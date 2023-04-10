@@ -3,7 +3,7 @@
 import sys
 
 from scrapy import cmdline
-from spiders.drug import Crawl1, Crawl2, Crawl4, Crawl5
+from spiders.drug import Crawl1, Crawl2, Crawl4, Crawl5, Crawl3
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
@@ -17,7 +17,7 @@ def main():
     process.crawl(Crawl4)
     process.crawl(Crawl1)
     process.crawl(Crawl2)
-    # process.crawl(Crawl3)
+    process.crawl(Crawl3)
     process.crawl(Crawl5)
     process.start()
     # if name:

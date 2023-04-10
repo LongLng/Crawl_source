@@ -3,7 +3,7 @@ import scrapy
 from scrapy.http import Request
 import os
 import scrapy
-from items import DrugItem, MedicalEquipment
+from items import DrugItem
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.log import configure_logging
 from scrapy.utils.project import get_project_settings
@@ -30,6 +30,7 @@ class Crawl1(scrapy.Spider):
     start_urls = ['https://dav.gov.vn']
     name = "dav_gov"
     headers = headers
+    type = 'drug'
 
     def parse(self, response):
         # for page in range(1, 3):
@@ -53,8 +54,9 @@ class Crawl1(scrapy.Spider):
         item = DrugItem()
         titles = response.xpath("//table[@class='table table-bordered']/tbody/tr/td[4]/text()").extract()
         for i in titles:
-            item['name_drug'] = i.strip()
+            item['name'] = i.strip()
             item['source_link'] = link
+            item['type'] = self.type
             yield item
             # yield {
             #     "Title": i,
@@ -65,6 +67,7 @@ class Crawl2(scrapy.Spider):
     start_urls = ['https://drugbank.vn']
     name = "drug_bank"
     headers = headers
+    type = 'drug'
 
     def parse(self, response):
         # for page in range(1, 3):
@@ -88,8 +91,9 @@ class Crawl2(scrapy.Spider):
         item = DrugItem()
         products = json.loads(response.text)
         for product in products:
-            item['name_drug'] = product['tenThuoc'].strip()
+            item['name'] = product['tenThuoc'].strip()
             item['source_link'] = link
+            item['type'] = self.type
             yield item
             # yield {
             #     "Title": i,
@@ -100,6 +104,7 @@ class Crawl3(scrapy.Spider):
     start_urls = ['https://dmec.moh.gov.vn']
     headers = headers
     name = "dmec"
+    type = 'medical_equipment'
 
     def parse(self, response):
 
@@ -109,11 +114,12 @@ class Crawl3(scrapy.Spider):
 
     def saveFile(self, response):
         link = 'dmec.moh.gov.vn'
-        item = MedicalEquipment()
+        item = DrugItem()
         titles = response.xpath("//table[@class='oep-table']/tr/td[2]/text()").extract()
         for i in titles:
-            item['name_medical_equipment'] = i.strip()
+            item['name'] = i.strip()
             item['source_link'] = link
+            item['type'] = self.type
             yield item
             # yield {
             #     "Title": i,
@@ -121,12 +127,13 @@ class Crawl3(scrapy.Spider):
 
 
 class Crawl4(scrapy.Spider):
-    start_urls = ['https://dmec.moh.gov.vn']
+    start_urls = ['https://dichvucong.dav.gov.vn']
     headers = {
         'Content-Type': 'application/json',
         'Cookie': 'Abp.Localization.CultureName=en'
     }
     name = "dichvucong"
+    type = 'drug'
 
     def parse(self, response):
         for i in range(5):
@@ -155,8 +162,9 @@ class Crawl4(scrapy.Spider):
         item = DrugItem()
         products = json.loads(response.text)['result']['items']
         for i in products:
-            item['name_drug'] = i['tenThuoc'].strip()
+            item['name'] = i['tenThuoc'].strip()
             item['source_link'] = link
+            item['type'] = self.type
             yield item
             # yield {
             #     "Title": i,
@@ -164,9 +172,10 @@ class Crawl4(scrapy.Spider):
 
 
 class Crawl5(scrapy.Spider):
-    start_urls = ['https://dmec.moh.gov.vn']
+    start_urls = ['https://www.thuocbietduoc.com.vn']
     headers = headers
     name = "thuocbietduoc"
+    type = 'drug'
 
     def parse(self, response):
         # for page in range(1, 3):
@@ -192,8 +201,9 @@ class Crawl5(scrapy.Spider):
         item = DrugItem()
         titles = response.xpath("//table[@id='dlstThuoc']/tr/td/table[1]/tr/td[2]/h2/a/text()").extract()
         for i in titles:
-            item['name_drug'] = i.replace('\t', '').replace('\r', '').replace('\n', '').strip()
+            item['name'] = i.replace('\t', '').replace('\r', '').replace('\n', '').strip()
             item['source_link'] = link
+            item['type'] = self.type
             yield item
             # yield {
             #     "Title": i,
