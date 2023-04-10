@@ -14,10 +14,10 @@ print("sys.path:\n" + "\n".join(sys.path))
 def main():
     settings = get_project_settings()
     process = CrawlerProcess(settings)
-    process.crawl(Crawl4)
     process.crawl(Crawl1)
     process.crawl(Crawl2)
     process.crawl(Crawl3)
+    process.crawl(Crawl4)
     process.crawl(Crawl5)
     process.start()
     # if name:

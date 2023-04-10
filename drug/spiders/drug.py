@@ -4,6 +4,7 @@ from scrapy.http import Request
 import os
 import scrapy
 from items import DrugItem
+import time
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.log import configure_logging
 from scrapy.utils.project import get_project_settings
@@ -127,7 +128,7 @@ class Crawl3(scrapy.Spider):
 
 
 class Crawl4(scrapy.Spider):
-    start_urls = ['https://dichvucong.dav.gov.vn']
+    start_urls = ['https://www.google.com.vn']
     headers = {
         'Content-Type': 'application/json',
         'Cookie': 'Abp.Localization.CultureName=en'
@@ -146,6 +147,7 @@ class Crawl4(scrapy.Spider):
             })
             link = "https://dichvucong.dav.gov.vn/api/services/app/soDangKy/GetAllPublicServerPaging"
             yield scrapy.Request(link, headers=self.headers, callback=self.saveFile, method='POST', body=payload)
+            print('Connect dichvucong')
 
     # for page in range(1, 1312):
     #     link = f'https://dmec.moh.gov.vn/cong-khai-phan-loai-ttbyt?p_p_id=vanbancongkhaipl_WAR_trangthietbiyteportlet&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_vanbancongkhaipl_WAR_trangthietbiyteportlet_keyword=&_vanbancongkhaipl_WAR_trangthietbiyteportlet_showHide=0&_vanbancongkhaipl_WAR_trangthietbiyteportlet_doanhNghiepPL=&_vanbancongkhaipl_WAR_trangthietbiyteportlet_doanhNghiepDN=&_vanbancongkhaipl_WAR_trangthietbiyteportlet_tenThietBi=&_vanbancongkhaipl_WAR_trangthietbiyteportlet_mucDoRuiDo=0&_vanbancongkhaipl_WAR_trangthietbiyteportlet_trangThaiId=0&_vanbancongkhaipl_WAR_trangthietbiyteportlet_laThietBiTieuHao=-1&_vanbancongkhaipl_WAR_trangthietbiyteportlet_chungLoaiId=0&_vanbancongkhaipl_WAR_trangthietbiyteportlet_ngayGuiTu=&_vanbancongkhaipl_WAR_trangthietbiyteportlet_ngayGuiDen=&_vanbancongkhaipl_WAR_trangthietbiyteportlet_delta=75&_vanbancongkhaipl_WAR_trangthietbiyteportlet_keywords=&_vanbancongkhaipl_WAR_trangthietbiyteportlet_advancedSearch=false&_vanbancongkhaipl_WAR_trangthietbiyteportlet_andOperator=true&_vanbancongkhaipl_WAR_trangthietbiyteportlet_resetCur=false&_vanbancongkhaipl_WAR_trangthietbiyteportlet_cur={page}'

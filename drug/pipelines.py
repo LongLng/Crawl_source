@@ -12,7 +12,8 @@ from itemadapter import ItemAdapter
 class SaveDrugToSql(object):
     def __init__(self):
         self.create_connection()
-        self.create_table()
+        if self.checkTableExists('drug_info') == False:
+            self.create_table()
 
     def create_connection(self):
         self.conn = mysql.connector.connect(
@@ -22,6 +23,18 @@ class SaveDrugToSql(object):
             database='drug_data'
         )
         self.curr = self.conn.cursor()
+
+    def checkTableExists(self, tableName):
+        self.curr.execute(
+            """
+                    SELECT COUNT(*)
+                    FROM information_schema.tables
+                    WHERE table_name = '{0}'
+                    """.format(tableName.replace('\'', '\'\''))
+        )
+        if self.curr.fetchone()[0] == 1:
+            return True
+        return False
 
     def create_table(self):
         self.curr.execute("DROP TABLE IF EXISTS drug_info")
